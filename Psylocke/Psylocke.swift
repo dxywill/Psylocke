@@ -105,12 +105,23 @@ class Psylocke: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         let opaqueBuffer = Unmanaged<CVImageBuffer>.passUnretained(imageBuffer!).toOpaque()
         let pixelBuffer = Unmanaged<CVPixelBuffer>.fromOpaque(opaqueBuffer).takeUnretainedValue()
         let sourceImage = CIImage(CVPixelBuffer: pixelBuffer, options:nil)
-        var options = [CIDetectorSmile: true, CIDetectorEyeBlink: true, CIDetectorImageOrientation : 6]
+        let options = [CIDetectorSmile: true, CIDetectorEyeBlink: true, CIDetectorImageOrientation : 6]
         
         let features = self.faceDetector!.featuresInImage(sourceImage, options: options)
         
         if (features.count != 0) {
             print("detected faces")
+            for feature in features as! [CIFaceFeature] {
+                if (feature.hasSmile) {
+                    print("Smile")
+                }
+                if (feature.leftEyeClosed) {
+                    print("left eye closed")
+                }
+                if (feature.rightEyeClosed) {
+                    print("right eye closed")
+                }
+            }
         } else {
             print("no face detected")
         }
