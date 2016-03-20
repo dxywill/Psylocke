@@ -11,23 +11,19 @@ import AVFoundation
 
 class ViewController: UIViewController {
 
-    let captureSession = AVCaptureSession()
-    var previewLayer: AVCaptureVideoPreviewLayer?
-    
-    var captureDevice: AVCaptureDevice?
+    private var psylocke : Psylocke?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        let devices = AVCaptureDevice.devices()
-        for device in devices {
-            if (device.position == AVCaptureDevicePosition.Front) {
-                captureDevice = device as? AVCaptureDevice
-            }
-        }
-        self.beginSession()
+        self.psylocke = Psylocke(cameraPosition: Psylocke.CameraDevice.FaceTimeCamera, optimizeFor: Psylocke.DetectorAccuracy.HigherPerformance)
+        
+        psylocke?.beginFaceDetection()
+        
+        let cameraView = psylocke!.psylockeCameraView
+        self.view.addSubview(cameraView)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,17 +31,5 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func beginSession () {
-        do {
-            try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
-        } catch let error as NSError {
-            print(error)
-        }
-        
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        self.view.layer.addSublayer(previewLayer!)
-        previewLayer?.frame = self.view.layer.frame
-        captureSession.startRunning()
-    }
 }
 
