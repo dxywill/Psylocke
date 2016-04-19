@@ -12,6 +12,8 @@ import ImageIO
 import CoreImage
 
 
+typealias ProcessBlock = ( imageInput : CIImage ) -> (CIImage)
+
 class Psylocke: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     enum DetectorAccuracy {
@@ -24,6 +26,7 @@ class Psylocke: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         case FaceTimeCamera
     }
     
+    private var processBlock: ProcessBlock? = nil
     private var faceDetector : CIDetector?
     private var captureSession : AVCaptureSession = AVCaptureSession()
     private var captureDevice : AVCaptureDevice!
@@ -42,6 +45,11 @@ class Psylocke: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         faceDetectorOptions = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
         self.faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
+    }
+    
+    func setProcessingBlock(newProcessBlock: ProcessBlock) {
+        
+        self.processBlock = newProcessBlock
     }
     
     func beginFaceDetection() {
@@ -105,6 +113,16 @@ class Psylocke: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         let opaqueBuffer = Unmanaged<CVImageBuffer>.passUnretained(imageBuffer!).toOpaque()
         let pixelBuffer = Unmanaged<CVPixelBuffer>.fromOpaque(opaqueBuffer).takeUnretainedValue()
         let sourceImage = CIImage(CVPixelBuffer: pixelBuffer, options:nil)
+        
+        
+        // run through a filter
+        var filteredImage:CIImage! = nil;
+        
+        if(self.processBlock != nil){
+            print("procesBlock detected, doing")
+            filteredImage=self.processBlock!(imageInput: sourceImage)
+        }
+        
         let options = [CIDetectorSmile: true, CIDetectorEyeBlink: true, CIDetectorImageOrientation : 6]
         
         let features = self.faceDetector!.featuresInImage(sourceImage, options: options)

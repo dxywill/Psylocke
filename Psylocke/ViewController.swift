@@ -17,7 +17,36 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        
+        var faceDetectorOptions : [String : AnyObject]?
+        faceDetectorOptions = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
+        let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
+
+        let opencvBridge = OpenCVBridge()
+        opencvBridge.trainData()
+        
         self.psylocke = Psylocke(cameraPosition: Psylocke.CameraDevice.FaceTimeCamera, optimizeFor: Psylocke.DetectorAccuracy.HigherPerformance)
+        
+        
+        self.psylocke?.setProcessingBlock({ (imageInput) -> (CIImage) in
+            
+            // this ungodly mess makes sure the image is the correct orientation
+            //var optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
+            
+            // get the face features
+            let options = [CIDetectorSmile: true, CIDetectorEyeBlink: true, CIDetectorImageOrientation : 6]
+            var features = faceDetector.featuresInImage(imageInput, options: options) as! [CIFaceFeature]
+            //var filterCenter = CGPoint()
+            var retClass = -1
+            
+            // do some processing in core image and in OpenCV
+            for f in features {
+                print("+++++++++has faces, send to processing")
+                // this is a blocking call
+                retClass = Int(opencvBridge.OpenCVFisherFaceClassifier(f, usingImage: imageInput))
+            }
+            return imageInput
+        })
         
         psylocke?.beginFaceDetection()
         
