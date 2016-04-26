@@ -17,7 +17,7 @@
 
 - (CIImage*) OpenCVDrawAndReturnFaces:(CIFaceFeature *)faceFeature usingImage:(CIImage*)ciFrameImage;
 
-- (void) trainData;
+- (float *) trainData;
 
 
 @end

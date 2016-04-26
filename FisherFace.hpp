@@ -38,7 +38,7 @@ public: FisherFace();
 public:
     int testDo;
 
-    void train(vector<Mat>& images, vector<int>& labels);
+    Mat train(vector<Mat>& images, vector<int>& labels);
     int getClassification( Mat& m);
     //int uglySolution(vector<Mat>& images, vector<int>& labels, Mat& m);
     

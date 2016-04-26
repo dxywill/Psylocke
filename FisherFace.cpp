@@ -19,7 +19,7 @@ FisherFace::FisherFace() {
 FisherFace::~FisherFace() {}
 
 
-void FisherFace::train(vector<Mat>& images, vector<int>& labels) {
+Mat FisherFace::train(vector<Mat>& images, vector<int>& labels) {
     Mat testSample = images[images.size() - 1];
     int testLabel = labels[labels.size() - 1];
     images.pop_back();
@@ -31,6 +31,9 @@ void FisherFace::train(vector<Mat>& images, vector<int>& labels) {
     printf("%d\n",predictedLabel);
     printf("%d\n", testLabel);
     
+    Mat eigenValues = model->getMat("eigenvalues");
+    return eigenValues;
+    
 }
 
 int FisherFace::getClassification(Mat& m) {
@@ -38,5 +41,11 @@ int FisherFace::getClassification(Mat& m) {
     int res = -1;
     res = model->predict(m);
     printf("Get predicted res: %d", res);
+    Mat eigenValues = model->getMat("eigenvalues");
+    Mat eigenVectors = model->getMat("eigenvectors");
+    for (int i = 0; i < min(16, eigenVectors.cols); i++) {
+        string msg = format("Eigenvalue #%d = %.5f", i, eigenValues.at<double>(i));
+        cout << msg <<endl;
+    }
     return res;
 }

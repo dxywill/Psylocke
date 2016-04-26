@@ -164,7 +164,7 @@ using namespace cv;
     return cvMat;
 }
 
-- (void) trainData {
+- (float *) trainData {
    
     self.fisher = new FisherFace();
     NSString* haar = [[NSBundle mainBundle] pathForResource:@"haarcascade_frontalface_default" ofType:@"xml"];
@@ -203,7 +203,12 @@ using namespace cv;
             }
         }
     }
-    self.fisher->train(images, labels);
+    cv::Mat eigenValues = self.fisher->train(images, labels);
+    
+    static float r[5];
+    for (int i = 0; i < 5; i++)
+        r[i] = eigenValues.at<double>(i);
+    return r;
 }
 
 @end
