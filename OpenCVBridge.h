@@ -15,8 +15,9 @@
 
 - (int) OpenCVFisherFaceClassifier: (CIFaceFeature *) faceFeature usingImage:(CIImage*)ciFrameImage;
 
+- (CIImage*) OpenCVDrawAndReturnFaces:(CIFaceFeature *)faceFeature usingImage:(CIImage*)ciFrameImage;
+
 - (void) trainData;
 
-- (int) oneUglySolution:(CIFaceFeature *) faceFeature usingImage:(CIImage*)ciFrameImage;
 
 @end

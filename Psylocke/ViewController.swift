@@ -12,6 +12,7 @@ import AVFoundation
 class ViewController: UIViewController {
 
     private var psylocke : Psylocke?
+    let dataLabel : UILabel = UILabel(frame: CGRectMake(30, 30, 300, 20))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,9 +42,15 @@ class ViewController: UIViewController {
             
             // do some processing in core image and in OpenCV
             for f in features {
-                print("+++++++++has faces, send to processing")
                 // this is a blocking call
                 retClass = Int(opencvBridge.OpenCVFisherFaceClassifier(f, usingImage: imageInput))
+                //update label
+                dispatch_async(dispatch_get_main_queue(), {
+                    //perform all UI stuff here
+                    self.dataLabel.text = String(retClass)
+                    self.dataLabel.font = self.dataLabel.font.fontWithSize(30)
+                })
+                return opencvBridge.OpenCVDrawAndReturnFaces(f, usingImage: imageInput)
             }
             return imageInput
         })
@@ -52,6 +59,8 @@ class ViewController: UIViewController {
         
         let cameraView = psylocke!.psylockeCameraView
         self.view.addSubview(cameraView)
+        dataLabel.text = "hello world"
+        self.view.addSubview(dataLabel)
         
     }
 
