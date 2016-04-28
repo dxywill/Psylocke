@@ -59,6 +59,127 @@ using namespace cv;
     
 }
 
+-(CIImage *) rotateAndCrop
+{
+    
+    NSString * fileParh =[NSString stringWithFormat:@"angle.png"];
+    UIImage *curImage = [UIImage imageNamed:fileParh];
+    
+    CIImage* coreImage = curImage.CIImage;
+    
+    if (!coreImage) {
+        NSLog(@"init from CG");
+        coreImage = [CIImage imageWithCGImage:curImage.CGImage];
+    }
+    
+    if (!coreImage) {
+        NSLog(@"error !");
+    }
+
+    CGRect coreRect = coreImage.extent;
+    CGFloat a = 15.0/360 * M_PI;
+    CGFloat x = 438;
+    CGFloat y = 608;
+    CGFloat x2 = 612;
+    CGFloat y2 = 666;
+    int dest_height = 200;
+    int dest_width = 200;
+    float offset_pct = 0.25;
+    
+    float offset_h = floor(offset_pct * dest_width);
+    float offset_v = floor(offset_pct * dest_height);
+    
+    //Get eye direction
+    float direct_x = x2 - x;
+    float direct_y = y2 - y;
+    
+    //Calc rotation angle in radians
+    CGFloat rads = atan2(direct_y, direct_x);
+    
+    //Calculate the distance between two eyes
+    float dist = sqrt(pow((x2 - x), 2) + pow((y2 - y),2));
+    
+    float reference = dest_width - 2.0 * offset_h;
+    float scale = dist / reference;
+    
+    float crop_x = x - scale * offset_h;
+    float crop_y = y - scale * offset_v;
+    
+    float crop_size_h = scale * dest_height;
+    float crop_size_w = scale * dest_width;
+    
+    CGRect rect = CGRectMake(crop_x, crop_y, crop_size_w, crop_size_h);
+    
+
+    CGAffineTransform transform = CGAffineTransformMake(cos(rads),sin(rads),-sin(rads),cos(rads),x-x*cos(rads)+y*sin(rads),y-x*sin(rads)-y*cos(rads));
+//    CGAffineTransform transform = CGAffineTransformMakeTranslation(x, y);
+//    transform = CGAffineTransformRotate(transform, a);
+//    transform = CGAffineTransformTranslate(transform,-x,-y);
+    
+    CGAffineTransform transform2 = CGAffineTransformTranslate(CGAffineTransformMakeScale(1, -1), 0, coreImage.extent.size.height); // This is working
+    
+    CIImage *alignedImage = [coreImage imageByApplyingTransform:transform];
+    
+    
+    CIDetector* detector = [CIDetector detectorOfType:CIDetectorTypeFace
+                                              context:nil options:[NSDictionary dictionaryWithObject:CIDetectorAccuracyHigh forKey:CIDetectorAccuracy]];
+    
+    NSArray* features = [detector featuresInImage:alignedImage];
+    
+    for(CIFaceFeature* faceObject in features)
+    {
+        if(faceObject.hasLeftEyePosition)
+        {
+            NSLog(@"left eye position %f, %f", faceObject.leftEyePosition.x, faceObject.leftEyePosition.y);
+            //CGRect leftEye = CGRectMake(faceObject.leftEyePosition.x,(facePicture.size.height-faceObject.leftEyePosition.y), 10, 10);
+        }
+        if(faceObject.hasRightEyePosition)
+        {
+            NSLog(@"right eye position %f, %f", faceObject.rightEyePosition.x, faceObject.rightEyePosition.y);
+            //CGRect leftEye = CGRectMake(faceObject.leftEyePosition.x,(facePicture.size.height-faceObject.leftEyePosition.y), 10, 10);
+        }
+        
+    }
+
+    
+    
+    // Convert back to UIImage
+    CIContext *context = [CIContext contextWithOptions:nil];
+    CGRect rrcct = alignedImage.extent;
+    CGImage * cgImage = [context createCGImage:alignedImage fromRect: coreRect]; //Do not use rrcct here!! it is rotated!!
+   
+    
+    CGImageRef imageRef = CGImageCreateWithImageInRect(cgImage, rect);
+    
+    UIImage *u = [UIImage imageWithCGImage: imageRef];
+    
+    CGImageRelease(imageRef);
+    //UIImage *uiImage = [[UIImage alloc] initWithCIImage:alignedImage];    // This is not working, interesting!
+    
+    
+//  
+//    UIImageWriteToSavedPhotosAlbum(u,
+//                                   self,
+//                                   @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:),
+//                                   nil);
+    
+    
+    return  curImage.CIImage;
+}
+
+- (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {
+    if (error) {
+        NSLog(@"whaaaaaat!");
+        // Do anything needed to handle the error or display it to the user
+    } else {
+        NSLog(@"successfully saved");
+        // .... do anything you want here to handle
+        // .... when the image has been saved in the photo album
+    }
+}
+
+
+
 - (CIImage*) OpenCVDrawAndReturnFaces:(CIFaceFeature *)faceFeature usingImage:(CIImage*)ciFrameImage
 {
     
@@ -133,6 +254,33 @@ using namespace cv;
     return cvMat;
 }
 
++ (cv::Mat)cvMatWithImageCustome:(UIImage *)image
+{
+    CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);
+    CGFloat cols = image.size.width;
+    CGFloat rows = image.size.height;
+    
+    cv::Mat cvMat(rows, cols, CV_8UC4); // 8 bits per component, 4 channels, CV_8UC1 for grayscale ?
+    
+    CGContextRef contextRef = CGBitmapContextCreate(cvMat.data,                 // Pointer to backing data
+                                                    cols,                       // Width of bitmap
+                                                    rows,                       // Height of bitmap
+                                                    8,                          // Bits per component
+                                                    cvMat.step[0],              // Bytes per row
+                                                    colorSpace,                 // Colorspace
+                                                    kCGImageAlphaNoneSkipLast |
+                                                    kCGBitmapByteOrderDefault); // Bitmap info flags , kCGImageAlphaNone for grayscale?
+    
+    
+    
+    
+    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), image.CGImage);
+    CGContextRelease(contextRef);
+    
+    return cvMat;
+}
+
+
 + (cv::Mat)ciimageTocvMat: (CIImage *) image
 {
     CIContext *context =  [CIContext contextWithCGContext:nil options: nil];
@@ -201,6 +349,67 @@ using namespace cv;
                 labels.push_back(j);
                 
             }
+        }
+    }
+    cv::Mat eigenValues = self.fisher->train(images, labels);
+    
+    static float r[5];
+    for (int i = 0; i < 5; i++)
+        r[i] = eigenValues.at<double>(i);
+    return r;
+}
+
+- (float *) customTrain {
+    
+    self.fisher = new FisherFace();
+    NSString* haar = [[NSBundle mainBundle] pathForResource:@"haarcascade_frontalface_default" ofType:@"xml"];
+    NSLog(@"%@", haar);
+    
+    std::string bar = std::string([haar UTF8String]);
+    CascadeClassifier face_cascade;
+    if (!face_cascade.load(bar))
+        printf("--(!)Error loading\n");
+    
+    cv::vector<cv::Rect> faces;
+    
+    vector<Mat> images;
+    vector<int> labels;
+    
+    NSArray *emotions = @[@"netrual", @"happy", @"sad",
+                          @"surprised", @"sleepy", @"angry"];
+    
+    
+    for (int i = 0; i < 6; i++) {
+        for (int j = 1; j <= 5; j++) {
+            NSString * fileParh =[NSString stringWithFormat:@"xinyiface/%@_%d.png", emotions[i], j];
+            UIImage *curImage = [UIImage imageNamed:fileParh];
+            cv::Mat cvimg = [OpenCVBridge cvMatWithImageCustome: curImage ];
+            
+            cv::Mat greyMat;
+            cv::cvtColor(cvimg, greyMat, CV_BGR2GRAY);
+            
+            cv::Mat face_resized;
+            cv::resize(greyMat, face_resized, cv::Size(200, 200), 1.0, 1.0, INTER_CUBIC);
+                
+            images.push_back(face_resized);
+            labels.push_back(i);
+            
+//            face_cascade.detectMultiScale(cvimg, faces);
+//            
+//            if (faces.size() > 0) {
+//                cv::Mat roi = cv::Mat(cvimg, faces[0]);
+//                
+//                cv::Mat greyMat;
+//                cv::cvtColor(roi, greyMat, CV_BGR2GRAY);
+//                
+//                cv::Mat face_resized;
+//                cv::resize(greyMat, face_resized, cv::Size(200, 200), 1.0, 1.0, INTER_CUBIC);
+//                
+//                images.push_back(face_resized);
+//                labels.push_back(i);
+//                
+//            }
+
         }
     }
     cv::Mat eigenValues = self.fisher->train(images, labels);

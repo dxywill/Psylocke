@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     let eigen_3 : UILabel = UILabel(frame: CGRectMake(10, 110, 300, 20))
     let eigen_4 : UILabel = UILabel(frame: CGRectMake(10, 130, 300, 20))
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -29,7 +30,9 @@ class ViewController: UIViewController {
         let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
 
         let opencvBridge = OpenCVBridge()
-        let eigenValues = opencvBridge.trainData()
+        let blabla = opencvBridge.rotateAndCrop()
+            
+        let eigenValues = opencvBridge.customTrain()
         
         self.psylocke = Psylocke(cameraPosition: Psylocke.CameraDevice.FaceTimeCamera, optimizeFor: Psylocke.DetectorAccuracy.HigherPerformance)
         
@@ -95,7 +98,7 @@ class ViewController: UIViewController {
         case 2:
             return "Sad"
         case 3:
-            return  "Surprised"
+            return "Surprised"
         case 4:
             return "Sleepy"
         case 5:

@@ -21,6 +21,9 @@
 		AED31DB41CC4B2CD00A24622 /* subject03.png in Resources */ = {isa = PBXBuildFile; fileRef = AED31DB31CC4B2CD00A24622 /* subject03.png */; };
 		AED31DB61CC57D9100A24622 /* kobe.png in Resources */ = {isa = PBXBuildFile; fileRef = AED31DB51CC57D9100A24622 /* kobe.png */; };
 		AED31DB91CC5D47600A24622 /* OpenCVBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = AED31DB81CC5D47600A24622 /* OpenCVBridge.mm */; };
+		AEDFB9B81CD06CD500FB32F7 /* xinyiface in Resources */ = {isa = PBXBuildFile; fileRef = AEDFB9B71CD06CD500FB32F7 /* xinyiface */; };
+		AEDFB9BA1CD071C300FB32F7 /* original in Resources */ = {isa = PBXBuildFile; fileRef = AEDFB9B91CD071C300FB32F7 /* original */; };
+		AEDFB9BE1CD13EBC00FB32F7 /* angle.png in Resources */ = {isa = PBXBuildFile; fileRef = AEDFB9BD1CD13EBC00FB32F7 /* angle.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +46,9 @@
 		AED31DB51CC57D9100A24622 /* kobe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kobe.png; sourceTree = "<group>"; };
 		AED31DB71CC5D47600A24622 /* OpenCVBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCVBridge.h; sourceTree = "<group>"; };
 		AED31DB81CC5D47600A24622 /* OpenCVBridge.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVBridge.mm; sourceTree = "<group>"; };
+		AEDFB9B71CD06CD500FB32F7 /* xinyiface */ = {isa = PBXFileReference; lastKnownFileType = folder; path = xinyiface; sourceTree = "<group>"; };
+		AEDFB9B91CD071C300FB32F7 /* original */ = {isa = PBXFileReference; lastKnownFileType = folder; path = original; sourceTree = "<group>"; };
+		AEDFB9BD1CD13EBC00FB32F7 /* angle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = angle.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +111,9 @@
 			children = (
 				AED31DB51CC57D9100A24622 /* kobe.png */,
 				AED31DB31CC4B2CD00A24622 /* subject03.png */,
+				AEDFB9BD1CD13EBC00FB32F7 /* angle.png */,
+				AEDFB9B91CD071C300FB32F7 /* original */,
+				AEDFB9B71CD06CD500FB32F7 /* xinyiface */,
 				AED31DA21CC4912F00A24622 /* yalefaces */,
 				AED31DB81CC5D47600A24622 /* OpenCVBridge.mm */,
 				AED31DB71CC5D47600A24622 /* OpenCVBridge.h */,
@@ -175,8 +184,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE863A6B1C94CB9D00BCD2EC /* LaunchScreen.storyboard in Resources */,
+				AEDFB9B81CD06CD500FB32F7 /* xinyiface in Resources */,
 				AED31DB61CC57D9100A24622 /* kobe.png in Resources */,
+				AEDFB9BA1CD071C300FB32F7 /* original in Resources */,
 				AED31DA31CC4912F00A24622 /* yalefaces in Resources */,
+				AEDFB9BE1CD13EBC00FB32F7 /* angle.png in Resources */,
 				AE863A681C94CB9D00BCD2EC /* Assets.xcassets in Resources */,
 				AED31D9C1CC48FAD00A24622 /* haarcascade_frontalface_default.xml in Resources */,
 				AE863A661C94CB9D00BCD2EC /* Main.storyboard in Resources */,

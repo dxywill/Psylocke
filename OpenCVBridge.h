@@ -19,5 +19,8 @@
 
 - (float *) trainData;
 
+- (float *) customTrain;
+
+- (CIImage *) rotateAndCrop;
 
 @end
