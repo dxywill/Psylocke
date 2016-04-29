@@ -30,7 +30,6 @@ class ViewController: UIViewController {
         let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
 
         let opencvBridge = OpenCVBridge()
-        let blabla = opencvBridge.rotateAndCrop()
             
         let eigenValues = opencvBridge.customTrain()
         
@@ -51,15 +50,20 @@ class ViewController: UIViewController {
             // do some processing in core image and in OpenCV
             for f in features {
                 // this is a blocking call
-                retClass = Int(opencvBridge.OpenCVFisherFaceClassifier(f, usingImage: imageInput))
-                let retEmo = self.numberToEmo(retClass)
-                //update label
-                dispatch_async(dispatch_get_main_queue(), {
-                    //perform all UI stuff here
-                    self.dataLabel.text = "The detected emotion:" + retEmo
-                    //self.dataLabel.font = self.dataLabel.font.fontWithSize(30)
-                })
-                return opencvBridge.OpenCVDrawAndReturnFaces(f, usingImage: imageInput)
+                if (f.hasLeftEyePosition && f.hasRightEyePosition) {
+                    print("print eye position:" + String(f.leftEyePosition.x) + ", " + String(f.leftEyePosition.y) + "," + String(f.rightEyePosition.x) + "," + String(f.rightEyePosition.y))
+                    
+                    retClass = Int(opencvBridge.OpenCVFisherFaceClassifier(f, usingImage: imageInput))
+                    let retEmo = self.numberToEmo(retClass)
+                    //update label
+                    dispatch_async(dispatch_get_main_queue(), {
+                        //perform all UI stuff here
+                        self.dataLabel.text = "The detected emotion:" + retEmo
+                        //self.dataLabel.font = self.dataLabel.font.fontWithSize(30)
+                    })
+                    return opencvBridge.OpenCVDrawAndReturnFaces(f, usingImage: imageInput)
+                }
+                
             }
             return imageInput
         })

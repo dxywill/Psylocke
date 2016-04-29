@@ -125,7 +125,7 @@ class Psylocke: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         self.captureSession.sessionPreset = AVCaptureSessionPresetHigh
-        
+
         if (captureError == nil) {
             if (self.captureSession.canAddInput(self.deviceInput)) {
                 captureSession.addInput(self.deviceInput)

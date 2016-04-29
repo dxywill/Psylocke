@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE1307301CD2EEA800A788F1 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = AE13072F1CD2EEA800A788F1 /* test.png */; };
 		AE863A611C94CB9D00BCD2EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE863A601C94CB9D00BCD2EC /* AppDelegate.swift */; };
 		AE863A631C94CB9D00BCD2EC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE863A621C94CB9D00BCD2EC /* ViewController.swift */; };
 		AE863A661C94CB9D00BCD2EC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE863A641C94CB9D00BCD2EC /* Main.storyboard */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AE13072F1CD2EEA800A788F1 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		AE863A5D1C94CB9C00BCD2EC /* Psylocke.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Psylocke.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE863A601C94CB9D00BCD2EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE863A621C94CB9D00BCD2EC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				AED31DB51CC57D9100A24622 /* kobe.png */,
 				AED31DB31CC4B2CD00A24622 /* subject03.png */,
 				AEDFB9BD1CD13EBC00FB32F7 /* angle.png */,
+				AE13072F1CD2EEA800A788F1 /* test.png */,
 				AEDFB9B91CD071C300FB32F7 /* original */,
 				AEDFB9B71CD06CD500FB32F7 /* xinyiface */,
 				AED31DA21CC4912F00A24622 /* yalefaces */,
@@ -193,6 +196,7 @@
 				AED31D9C1CC48FAD00A24622 /* haarcascade_frontalface_default.xml in Resources */,
 				AE863A661C94CB9D00BCD2EC /* Main.storyboard in Resources */,
 				AED31DB41CC4B2CD00A24622 /* subject03.png in Resources */,
+				AE1307301CD2EEA800A788F1 /* test.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -44,9 +44,12 @@ using namespace cv;
 {
     int res;
     //get face bounds and copy over smaller face image as CIIMage
-    CGRect faceRect = faceFeature.bounds;
-    CIImage *faceImage = [ciFrameImage imageByCroppingToRect:faceRect];
     
+   // CGRect faceRect = faceFeature.bounds;
+   // CIImage *faceImage = [ciFrameImage imageByCroppingToRect:faceRect];
+    
+    //Rotate and get the cropped face image
+    CIImage *faceImage = [OpenCVBridge rotateAndCrop:ciFrameImage];
     cv::Mat cvMat = [OpenCVBridge ciimageTocvMat:faceImage];
     cv::Mat face_resized;
     cv::Mat greyMat;
@@ -59,29 +62,65 @@ using namespace cv;
     
 }
 
--(CIImage *) rotateAndCrop
++ (CIImage *) rotateAndCrop: (CIImage *) ciFrameImage
 {
     
-    NSString * fileParh =[NSString stringWithFormat:@"angle.png"];
-    UIImage *curImage = [UIImage imageNamed:fileParh];
-    
-    CIImage* coreImage = curImage.CIImage;
-    
-    if (!coreImage) {
-        NSLog(@"init from CG");
-        coreImage = [CIImage imageWithCGImage:curImage.CGImage];
-    }
-    
-    if (!coreImage) {
-        NSLog(@"error !");
-    }
-
-    CGRect coreRect = coreImage.extent;
-    CGFloat a = 15.0/360 * M_PI;
     CGFloat x = 438;
     CGFloat y = 608;
     CGFloat x2 = 612;
     CGFloat y2 = 666;
+//    These codes are just for testing
+//    NSString * fileParh =[NSString stringWithFormat:@"test.png"];
+//    UIImage *curImage = [UIImage imageNamed:fileParh];
+//    
+//    CIImage* coreImage = curImage.CIImage;
+//    
+//    if (!coreImage) {
+//        NSLog(@"init from CG");
+//        coreImage = [CIImage imageWithCGImage:curImage.CGImage];
+//    }
+//    
+//    if (!coreImage) {
+//        NSLog(@"error !");
+//    }
+    
+    // Need to cloclwise 90 degree of the incoming ciframeImage and also keep the origin at (0,0) otherwise, there will be issues finding eye position!
+    // I don't know why do the following transform, but it works, figure this out later!
+    CGAffineTransform transform2 = CGAffineTransformMakeTranslation(0,  1280);
+    transform2 = CGAffineTransformRotate(transform2, -(90.0 / 180) * M_PI);
+    transform2 = CGAffineTransformTranslate(transform2,0,0);
+    
+//    CGAffineTransform transform2 = CGAffineTransformMakeRotation(M_PI_2);
+//    transform2 = CGAffineTransformScale(transform2, -1, 1);
+    
+    CIImage * adjustedciFrameImage = [ciFrameImage imageByApplyingTransform:transform2];
+
+    NSLog(@"print shape %f, %f, %f, %f", adjustedciFrameImage.extent.origin.x, adjustedciFrameImage.extent.origin.y, adjustedciFrameImage.extent.size.width, adjustedciFrameImage.extent.size.height);
+    
+
+    
+    CIDetector* detector = [CIDetector detectorOfType:CIDetectorTypeFace
+                                              context:nil options:[NSDictionary dictionaryWithObject:CIDetectorAccuracyHigh forKey:CIDetectorAccuracy]];
+    
+    NSArray* features = [detector featuresInImage:adjustedciFrameImage];
+    
+    for(CIFaceFeature* faceObject in features)
+    {
+        if(faceObject.hasLeftEyePosition)
+        {
+            NSLog(@"left eye position %f, %f", faceObject.leftEyePosition.x, faceObject.leftEyePosition.y);
+            x = faceObject.leftEyePosition.x;
+            y = 1280 - faceObject.leftEyePosition.y;
+        }
+        if(faceObject.hasRightEyePosition)
+        {
+            NSLog(@"right eye position %f, %f", faceObject.rightEyePosition.x, faceObject.rightEyePosition.y);
+            x2 = faceObject.rightEyePosition.x;
+            y2 =1280 - faceObject.rightEyePosition.y;
+        }
+        
+    }
+
     int dest_height = 200;
     int dest_width = 200;
     float offset_pct = 0.25;
@@ -95,6 +134,7 @@ using namespace cv;
     
     //Calc rotation angle in radians
     CGFloat rads = atan2(direct_y, direct_x);
+    rads = 0;
     
     //Calculate the distance between two eyes
     float dist = sqrt(pow((x2 - x), 2) + pow((y2 - y),2));
@@ -108,45 +148,24 @@ using namespace cv;
     float crop_size_h = scale * dest_height;
     float crop_size_w = scale * dest_width;
     
-    CGRect rect = CGRectMake(crop_x, crop_y, crop_size_w, crop_size_h);
+    CGRect rect = CGRectMake(crop_x, crop_y, crop_size_w , crop_size_h);
     
 
     CGAffineTransform transform = CGAffineTransformMake(cos(rads),sin(rads),-sin(rads),cos(rads),x-x*cos(rads)+y*sin(rads),y-x*sin(rads)-y*cos(rads));
+//    The above one line transform can also be implemented using the following three!
 //    CGAffineTransform transform = CGAffineTransformMakeTranslation(x, y);
 //    transform = CGAffineTransformRotate(transform, a);
 //    transform = CGAffineTransformTranslate(transform,-x,-y);
     
-    CGAffineTransform transform2 = CGAffineTransformTranslate(CGAffineTransformMakeScale(1, -1), 0, coreImage.extent.size.height); // This is working
     
-    CIImage *alignedImage = [coreImage imageByApplyingTransform:transform];
-    
-    
-    CIDetector* detector = [CIDetector detectorOfType:CIDetectorTypeFace
-                                              context:nil options:[NSDictionary dictionaryWithObject:CIDetectorAccuracyHigh forKey:CIDetectorAccuracy]];
-    
-    NSArray* features = [detector featuresInImage:alignedImage];
-    
-    for(CIFaceFeature* faceObject in features)
-    {
-        if(faceObject.hasLeftEyePosition)
-        {
-            NSLog(@"left eye position %f, %f", faceObject.leftEyePosition.x, faceObject.leftEyePosition.y);
-            //CGRect leftEye = CGRectMake(faceObject.leftEyePosition.x,(facePicture.size.height-faceObject.leftEyePosition.y), 10, 10);
-        }
-        if(faceObject.hasRightEyePosition)
-        {
-            NSLog(@"right eye position %f, %f", faceObject.rightEyePosition.x, faceObject.rightEyePosition.y);
-            //CGRect leftEye = CGRectMake(faceObject.leftEyePosition.x,(facePicture.size.height-faceObject.leftEyePosition.y), 10, 10);
-        }
-        
-    }
-
-    
+    CIImage *alignedImage = [adjustedciFrameImage imageByApplyingTransform:transform];
     
     // Convert back to UIImage
     CIContext *context = [CIContext contextWithOptions:nil];
-    CGRect rrcct = alignedImage.extent;
-    CGImage * cgImage = [context createCGImage:alignedImage fromRect: coreRect]; //Do not use rrcct here!! it is rotated!!
+    //CGRect rrcct = alignedImage.extent;
+    CGRect coreRect = ciFrameImage.extent;
+    CGRect adjustedRect = CGRectMake(0 , 0, adjustedciFrameImage.extent.size.width, adjustedciFrameImage.extent.size.height);
+    CGImage * cgImage = [context createCGImage:alignedImage fromRect: adjustedRect]; //Do not use rrcct here!! it is rotated!!
    
     
     CGImageRef imageRef = CGImageCreateWithImageInRect(cgImage, rect);
@@ -162,9 +181,14 @@ using namespace cv;
 //                                   self,
 //                                   @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:),
 //                                   nil);
-    
-    
-    return  curImage.CIImage;
+    if (!u.CIImage) {
+        NSLog(@"CIImage is nil");
+        CIImage * retImage  = [CIImage imageWithCGImage: imageRef];
+        return retImage;
+        
+    } else {
+        return u.CIImage;
+    }
 }
 
 - (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {

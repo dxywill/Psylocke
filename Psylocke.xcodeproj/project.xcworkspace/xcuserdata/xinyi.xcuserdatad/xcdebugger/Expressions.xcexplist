@@ -3,15 +3,23 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[OpenCVBridge customTrain]:OpenCVBridge.mm">
+      </ContextState>
+      <ContextState
+         contextName = "+[OpenCVBridge rotateAndCrop:]:OpenCVBridge.mm">
+         <PersistentStrings>
+            <PersistentString
+               value = "adjustedciFrame.extent">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[OpenCVBridge rotateAndCrop]:OpenCVBridge.mm">
          <PersistentStrings>
             <PersistentString
                value = "">
             </PersistentString>
          </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[OpenCVBridge customTrain]:OpenCVBridge.mm">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

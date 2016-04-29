@@ -21,6 +21,6 @@
 
 - (float *) customTrain;
 
-- (CIImage *) rotateAndCrop;
++ (CIImage *) rotateAndCrop:(CIImage *) ciFrameImage;
 
 @end
