@@ -22,11 +22,11 @@ FisherFace::~FisherFace() {}
 Mat FisherFace::train(vector<Mat>& images, vector<int>& labels) {
     Mat testSample = images[images.size() - 1];
     int testLabel = labels[labels.size() - 1];
-    images.pop_back();
-    labels.pop_back();
-    
-    images.pop_back();
-    labels.pop_back();
+//    images.pop_back();
+//    labels.pop_back();
+//    
+//    images.pop_back();
+//    labels.pop_back();
     
   
     int blabla;
@@ -63,37 +63,41 @@ void shuffleArray(int* array,int size)
 double FisherFace::crossValidate(vector<Mat>& images, vector<int>& labels) {
     //totally 88 images
     int vSize = images.size();
-    int k = 8;
+    //
+    int k = 5;
     vector<Mat> train;
     vector<Mat> test;
     vector<int> trainLabel;
     vector<int> testLabel;
-    int indices[88];
-    for (int j=0; j < 88; j++) {
+    int indices[vSize];
+    for (int j=0; j < vSize; j++) {
         indices[j] = j;
     }
-    shuffleArray(indices, 88);
+    shuffleArray(indices, vSize);
     int totalCorrect = 0;
+    int incorrect = 0;
     double accuracy = 1.0;
     //8 Fold cross validation
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < k; i++) {
         //Get testing data
         int j;
-        for (j = i * k; j < i * k + 8; j++) {
+        for (j = i * k; j < i * k + k; j++) {
             test.push_back(images[indices[j]]);
             testLabel.push_back(labels[indices[j]]);
         }
         //Get training data
-        for (int g = 0; g < 80; g++ ) {
-            train.push_back(images[indices[(j+g) % 88]]);
-            trainLabel.push_back(labels[indices[(j + g) % 88]]);
+        for (int g = 0; g < vSize - k; g++ ) {
+            train.push_back(images[indices[(j+g) % vSize]]);
+            trainLabel.push_back(labels[indices[(j + g) % vSize]]);
         }
         model->train(train, trainLabel);
-        for (int t=0; t < 8; t++) {
+        for (int t=0; t < k; t++) {
             int predicted = model->predict(test[t]);
             int realLabel = testLabel[t];
             if (realLabel == predicted) {
                 totalCorrect++;
+            } else {
+                incorrect++;
             }
             printf("Get predict label %d and realLabel %d\n", predicted, realLabel);
         }
@@ -102,7 +106,7 @@ double FisherFace::crossValidate(vector<Mat>& images, vector<int>& labels) {
         trainLabel.clear();
         testLabel.clear();
     }
-    accuracy = totalCorrect / 88.0;
+    accuracy = totalCorrect / (float)(totalCorrect + incorrect);
     printf("The overall accuracy is : %f", accuracy);
     return accuracy;
 }
