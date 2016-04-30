@@ -31,7 +31,7 @@ class ViewController: UIViewController {
 
         let opencvBridge = OpenCVBridge()
             
-        let eigenValues = opencvBridge.customTrain()
+        let eigenValues = opencvBridge.trainData()
         
         self.psylocke = Psylocke(cameraPosition: Psylocke.CameraDevice.FaceTimeCamera, optimizeFor: Psylocke.DetectorAccuracy.HigherPerformance)
         

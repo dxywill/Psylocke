@@ -39,6 +39,7 @@ public:
     int testDo;
 
     Mat train(vector<Mat>& images, vector<int>& labels);
+    double crossValidate(vector<Mat> & images, vector <int> & labels);
     int getClassification( Mat& m);
     //int uglySolution(vector<Mat>& images, vector<int>& labels, Mat& m);
     
@@ -46,6 +47,6 @@ private:
     Ptr<FaceRecognizer> model = createFisherFaceRecognizer();
     double testValue;
     static const int i = 10;
-    
+
 };
 
