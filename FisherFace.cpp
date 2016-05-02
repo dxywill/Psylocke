@@ -30,7 +30,7 @@ Mat FisherFace::train(vector<Mat>& images, vector<int>& labels) {
     
   
     int blabla;
-    crossValidate(images, labels);
+    //crossValidate(images, labels);
     model->train(images, labels);
 
     int predictedLabel = model->predict(testSample);

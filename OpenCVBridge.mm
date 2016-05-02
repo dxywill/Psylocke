@@ -9,6 +9,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreImage/CoreImage.h>
+#import "AFNetworking.h"
 
 #include "OpenCVBridge.h"
 #include "opencv2/core/core.hpp"
@@ -16,6 +17,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "FisherFace.hpp"
+
 
 #include <iostream>
 #include <fstream>
@@ -86,9 +88,12 @@ using namespace cv;
     
     // Need to cloclwise 90 degree of the incoming ciframeImage and also keep the origin at (0,0) otherwise, there will be issues finding eye position!
     // I don't know why do the following transform, but it works, figure this out later!
-    CGAffineTransform transform2 = CGAffineTransformMakeTranslation(0,  1280);
-    transform2 = CGAffineTransformRotate(transform2, -(90.0 / 180) * M_PI);
-    transform2 = CGAffineTransformTranslate(transform2,0,0);
+//    CGAffineTransform transform2 = CGAffineTransformMakeTranslation(0,  1280);
+//    transform2 = CGAffineTransformRotate(transform2, -(90.0 / 180) * M_PI);
+//    transform2 = CGAffineTransformTranslate(transform2,0,0);
+    
+    CGAffineTransform transform2 = CGAffineTransformMakeRotation(-M_PI_2);
+    transform2 = CGAffineTransformTranslate(transform2,-1280,0);   // Put the image origin to (0, 0) after affine transform
     
 //    CGAffineTransform transform2 = CGAffineTransformMakeRotation(M_PI_2);
 //    transform2 = CGAffineTransformScale(transform2, -1, 1);
@@ -334,6 +339,68 @@ using namespace cv;
     CGImageRelease(imageCG);
     
     return cvMat;
+}
+
+-(void) uploadImages{
+    
+//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+//    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+//    
+//    //
+//   // manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+//    
+//    NSURL *URL = [NSURL URLWithString:@"http://localhost:8000/emodetector"];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+//    
+//    NSURL *filePath = [NSURL fileURLWithPath:@"test.png"];
+//    NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithRequest:request fromFile:filePath progress:nil completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+//        if (error) {
+//            NSLog(@"Error: %@", error);
+//        } else {
+//            NSLog(@"Success: %@ %@", response, responseObject);
+//            NSDictionary *dic  = (NSDictionary *)responseObject;
+//            NSLog([dic objectForKey:@"foo"]);
+//        }
+//    }];
+//    [uploadTask resume];
+    
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:@"http://localhost:8000/emodetector/" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"test" ofType:@"png"]];
+        
+        //NSData *imageData = UIImageJPEGRepresentation(self.imageView.image, 0.9);
+        
+        NSString * fileParh =[NSString stringWithFormat:@"kobe.png"];
+        UIImage *curImage = [UIImage imageNamed:fileParh];
+        NSData *imageData = UIImagePNGRepresentation(curImage);
+        
+        
+        
+        //[formData appendPartWithFileURL:url name:@"file" fileName:@"test.png" mimeType:@"image/png" error:nil];
+        [formData appendPartWithFileData: imageData name:@"file" fileName:@"test.png" mimeType:@"image/png"];
+    } error:nil];
+    
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+    NSURLSessionUploadTask *uploadTask;
+    uploadTask = [manager
+                  uploadTaskWithStreamedRequest:request
+                  progress:^(NSProgress * _Nonnull uploadProgress) {
+                      // This is not called back on the main queue.
+                      // You are responsible for dispatching to the main queue for UI updates
+//                      dispatch_async(dispatch_get_main_queue(), ^{
+//                          //Update the progress view
+//                          [progressView setProgress:uploadProgress.fractionCompleted];
+//                      });
+                  }
+                  completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+                      if (error) {
+                          NSLog(@"Error: %@", error);
+                      } else {
+                          NSLog(@"%@ %@", response, responseObject);
+                      }
+                  }];
+    
+    [uploadTask resume];
 }
 
 - (float *) trainData {

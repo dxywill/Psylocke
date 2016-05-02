@@ -3,3 +3,4 @@
 //
 
 #import "OpenCVBridge.h"
+#import "AFNetworking/AFNetworking.h"

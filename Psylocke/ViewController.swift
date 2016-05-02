@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 
+
 class ViewController: UIViewController {
 
     private var psylocke : Psylocke?
@@ -30,7 +31,9 @@ class ViewController: UIViewController {
         let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
 
         let opencvBridge = OpenCVBridge()
-            
+        opencvBridge.uploadImages()
+        
+        
         let eigenValues = opencvBridge.trainData()
         
         self.psylocke = Psylocke(cameraPosition: Psylocke.CameraDevice.FaceTimeCamera, optimizeFor: Psylocke.DetectorAccuracy.HigherPerformance)
@@ -111,6 +114,7 @@ class ViewController: UIViewController {
             return "Netural"
         }
     }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

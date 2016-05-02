@@ -21,6 +21,8 @@
 
 - (float *) customTrain;
 
+- (void) uploadImages;
+
 + (CIImage *) rotateAndCrop:(CIImage *) ciFrameImage;
 
 @end
