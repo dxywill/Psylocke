@@ -30,6 +30,7 @@
 		AEBDA4B71CD6F3700042ED8D /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = AEBDA4AC1CD6F3700042ED8D /* UIProgressView+AFNetworking.m */; };
 		AEBDA4B81CD6F3700042ED8D /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = AEBDA4AE1CD6F3700042ED8D /* UIRefreshControl+AFNetworking.m */; };
 		AEBDA4B91CD6F3700042ED8D /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = AEBDA4B01CD6F3700042ED8D /* UIWebView+AFNetworking.m */; };
+		AEBDA4BF1CD91F730042ED8D /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBDA4BE1CD91F730042ED8D /* EntryViewController.swift */; };
 		AEC9C8691CC5DF2F00A2CFA4 /* FisherFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC9C8671CC5DF2F00A2CFA4 /* FisherFace.cpp */; };
 		AED31D991CC48E4700A24622 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED31D981CC48E4700A24622 /* opencv2.framework */; };
 		AED31D9C1CC48FAD00A24622 /* haarcascade_frontalface_default.xml in Resources */ = {isa = PBXBuildFile; fileRef = AED31D9B1CC48FAD00A24622 /* haarcascade_frontalface_default.xml */; };
@@ -87,6 +88,7 @@
 		AEBDA4AE1CD6F3700042ED8D /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		AEBDA4AF1CD6F3700042ED8D /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		AEBDA4B01CD6F3700042ED8D /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		AEBDA4BE1CD91F730042ED8D /* EntryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EntryViewController.swift; path = ../EntryViewController.swift; sourceTree = "<group>"; };
 		AEC9C8671CC5DF2F00A2CFA4 /* FisherFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FisherFace.cpp; sourceTree = "<group>"; };
 		AEC9C8681CC5DF2F00A2CFA4 /* FisherFace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FisherFace.hpp; sourceTree = "<group>"; };
 		AED31D981CC48E4700A24622 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				AE863A601C94CB9D00BCD2EC /* AppDelegate.swift */,
+				AEBDA4BE1CD91F730042ED8D /* EntryViewController.swift */,
 				AE863A621C94CB9D00BCD2EC /* ViewController.swift */,
 				AE863A641C94CB9D00BCD2EC /* Main.storyboard */,
 				AE863A671C94CB9D00BCD2EC /* Assets.xcassets */,
@@ -325,6 +328,7 @@
 				AEBDA4971CD6F3630042ED8D /* AFNetworkReachabilityManager.m in Sources */,
 				AEBDA4981CD6F3630042ED8D /* AFSecurityPolicy.m in Sources */,
 				AEBDA4961CD6F3630042ED8D /* AFHTTPSessionManager.m in Sources */,
+				AEBDA4BF1CD91F730042ED8D /* EntryViewController.swift in Sources */,
 				AE863A611C94CB9D00BCD2EC /* AppDelegate.swift in Sources */,
 				AEBDA4B31CD6F3700042ED8D /* AFNetworkActivityIndicatorManager.m in Sources */,
 				AED31DB91CC5D47600A24622 /* OpenCVBridge.mm in Sources */,
