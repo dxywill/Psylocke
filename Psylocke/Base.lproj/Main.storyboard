@@ -23,7 +23,7 @@
             </objects>
             <point key="canvasLocation" x="2540" y="-227"/>
         </scene>
-        <!--Entry View Controller-->
+        <!--Psylocke-->
         <scene sceneID="7L7-iM-IP5">
             <objects>
                 <viewController id="fWw-Zr-vbo" customClass="EntryViewController" customModule="Psylocke" customModuleProvider="target" sceneMemberID="viewController">
@@ -36,16 +36,23 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nfu-ev-bxv">
-                                <rect key="frame" x="172" y="258" width="54" height="30"/>
+                                <rect key="frame" x="143" y="264" width="54" height="30"/>
                                 <state key="normal" title="Custom"/>
                                 <connections>
-                                    <action selector="buttonTapped:" destination="fWw-Zr-vbo" eventType="touchUpInside" id="8Vu-Dr-tua"/>
+                                    <action selector="customizedTapped:" destination="fWw-Zr-vbo" eventType="touchUpInside" id="LNX-0p-pQm"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sud-Iw-Eon">
+                                <rect key="frame" x="143" y="198" width="54" height="30"/>
+                                <state key="normal" title="General"/>
+                                <connections>
+                                    <action selector="generalTapped:" destination="fWw-Zr-vbo" eventType="touchUpInside" id="BuI-KD-reV"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Gyj-LG-J7J"/>
+                    <navigationItem key="navigationItem" title="Psylocke" id="Gyj-LG-J7J"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ny9-Bh-dns" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

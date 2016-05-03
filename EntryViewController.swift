@@ -24,12 +24,23 @@ class EntryViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func buttonTapped(sender: AnyObject) {
-        print("GO GO GO !")
+    @IBAction func customizedTapped(sender: AnyObject) {
+        print("using customized data!")
         // Instantiate SecondViewController
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("captureView") as! ViewController
         
+        viewController.detectMode = "customized"
               // Take user to SecondViewController
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @IBAction func generalTapped(sender: AnyObject) {
+        print("using general data!")
+        // Instantiate SecondViewController
+        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("captureView") as! ViewController
+        
+        viewController.detectMode = "general"
+        // Take user to SecondViewController
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

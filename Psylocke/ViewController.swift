@@ -13,13 +13,15 @@ import AVFoundation
 class ViewController: UIViewController {
 
     private var psylocke : Psylocke?
-    let dataLabel : UILabel = UILabel(frame: CGRectMake(10, 30, 300, 20))
-    let eigen_0 : UILabel = UILabel(frame: CGRectMake(10, 50, 300, 20))
-    let eigen_1 : UILabel = UILabel(frame: CGRectMake(10, 70, 300, 20))
-    let eigen_2 : UILabel = UILabel(frame: CGRectMake(10, 90, 300, 20))
-    let eigen_3 : UILabel = UILabel(frame: CGRectMake(10, 110, 300, 20))
-    let eigen_4 : UILabel = UILabel(frame: CGRectMake(10, 130, 300, 20))
+    var detectMode:String?
+    let dataLabel : UILabel = UILabel(frame: CGRectMake(10, 80, 300, 20))
+    let eigen_0 : UILabel = UILabel(frame: CGRectMake(10, 100, 300, 20))
+    let eigen_1 : UILabel = UILabel(frame: CGRectMake(10, 120, 300, 20))
+    let eigen_2 : UILabel = UILabel(frame: CGRectMake(10, 140, 300, 20))
+    let eigen_3 : UILabel = UILabel(frame: CGRectMake(10, 160, 300, 20))
+    let eigen_4 : UILabel = UILabel(frame: CGRectMake(10, 180, 300, 20))
     
+    var eigenValues: UnsafeMutablePointer<Float>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,19 +34,21 @@ class ViewController: UIViewController {
         let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
 
         let opencvBridge = OpenCVBridge()
-        opencvBridge.uploadImages()
-        
-        
-        let eigenValues = opencvBridge.trainData()
+        //opencvBridge.uploadImages()
+      
+        if (detectMode == "customized") {
+            print("Using personalized images to tarin")
+            eigenValues = opencvBridge.customTrain()
+        } else {
+            print("Using yale faces to train model")
+            eigenValues = opencvBridge.trainData()
+        }
         
         self.psylocke = Psylocke(cameraPosition: Psylocke.CameraDevice.FaceTimeCamera, optimizeFor: Psylocke.DetectorAccuracy.HigherPerformance)
         
         
         self.psylocke?.setProcessingBlock({ (imageInput) -> (CIImage) in
-            
-            // this ungodly mess makes sure the image is the correct orientation
-            //var optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
-            
+        
             // get the face features
             let options = [CIDetectorSmile: true, CIDetectorEyeBlink: true, CIDetectorImageOrientation : 6]
             var features = faceDetector.featuresInImage(imageInput, options: options) as! [CIFaceFeature]
@@ -58,8 +62,12 @@ class ViewController: UIViewController {
                     print("print eye position:" + String(f.leftEyePosition.x) + ", " + String(f.leftEyePosition.y) + "," + String(f.rightEyePosition.x) + "," + String(f.rightEyePosition.y))
                     
                     retClass = Int(opencvBridge.OpenCVFisherFaceClassifier(f, usingImage: imageInput))
-                    let retEmo = self.numberToEmo(retClass)
+                    var retEmo = self.numberToEmo(retClass)
                     //update label
+                    //CIdetector is more accurate for detcting smile?
+                    if (f.hasSmile) {
+                        retEmo = "Smile"
+                    }
                     dispatch_async(dispatch_get_main_queue(), {
                         //perform all UI stuff here
                         self.dataLabel.text = "The detected emotion:" + retEmo
