@@ -47,11 +47,11 @@ using namespace cv;
     int res;
     //get face bounds and copy over smaller face image as CIIMage
     
-   // CGRect faceRect = faceFeature.bounds;
-   // CIImage *faceImage = [ciFrameImage imageByCroppingToRect:faceRect];
+    CGRect faceRect = faceFeature.bounds;
+    CIImage *faceImage = [ciFrameImage imageByCroppingToRect:faceRect];
     
     //Rotate and get the cropped face image
-    CIImage *faceImage = [OpenCVBridge rotateAndCrop:ciFrameImage];
+    //CIImage *faceImage = [OpenCVBridge rotateAndCrop:ciFrameImage];
     cv::Mat cvMat = [OpenCVBridge ciimageTocvMat:faceImage];
     cv::Mat face_resized;
     cv::Mat greyMat;
@@ -341,6 +341,7 @@ using namespace cv;
     return cvMat;
 }
 
+// upload image to cloud
 -(void) uploadImages{
     
 //    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
